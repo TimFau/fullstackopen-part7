@@ -1,0 +1,66 @@
+@import './blogs.scss';
+
+.bold {
+    font-weight: bold;
+}
+
+.error,
+.success {
+    border: 3px solid red;
+    padding: 10px 5px;
+    background: #eee;
+}
+
+.success {
+    border-color: green;
+}
+
+.input-wrap {
+    padding: 0 0 10px 0;
+}
+
+.input-wrap label {
+    padding: 0 5px 0 0;
+    min-width: 75px;
+    display: inline-block;
+}
+
+.input-wrap input {
+    height: 25px;
+}
+
+button {
+    height: 50px;
+    padding: 5px 10px;
+    min-width: 150px;
+    background: #000;
+    color: #fff;
+    border-color: #000;
+    font-weight: bold;
+    &.button-inline {
+        height: auto;
+        min-width: auto;
+        margin-left: 10px;
+    }
+}
+
+button:hover {
+    cursor: pointer;
+    background: #202020;
+    border-color: #202020;
+}
+
+.container {
+    padding: 15px;
+    background: #eee;
+    margin-bottom: 15px;
+}
+
+.user-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.toggle-wrapper div + div {
+    display: flex; justify-content: space-between;
+}

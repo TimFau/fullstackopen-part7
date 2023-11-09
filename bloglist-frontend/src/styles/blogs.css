@@ -1,0 +1,13 @@
+.blog-item {
+  padding: 10px;
+  border-bottom: 1px solid white; }
+  .blog-item .top-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; }
+  .blog-item span {
+    display: block;
+    padding: 5px 0; }
+    .blog-item span .likes-count {
+      display: inline-block;
+      padding: 0; }
