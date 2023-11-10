@@ -1,10 +1,13 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, createContext } from "react";
 import Blog from "./components/Blog";
 import CreateBlog from "./components/CreateBlog";
 import ToggleWrapper from "./components/ToggleWrapper";
+import Notification from "./components/Notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import "./styles/main.css";
+
+const NotificationContext = createContext(null);
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -144,12 +147,10 @@ const App = () => {
     return (
       <div>
         <h2>Log in</h2>
-        {errorMessages.map((errorMessage, index) => (
-          <p className="error" key={index}>
-            {errorMessage}
-          </p>
-        ))}
-        {successMessage && <p className="success">{successMessage}</p>}
+        <Notification
+          successMessage={successMessage}
+          errorMessages={errorMessages}
+        />
         <form onSubmit={handleLogin} className="container">
           <div className="input-wrap">
             <label htmlFor="username">Username</label>
@@ -180,40 +181,40 @@ const App = () => {
   }
 
   return (
-    <div>
-      {errorMessages.map((errorMessage, index) => (
-        <p className="error" key={index}>
-          {errorMessage}
-        </p>
-      ))}
-      {successMessage && <p className="success">{successMessage}</p>}
-      <div className="container user-info">
-        <p>{user.name} logged in</p>{" "}
-        <button type="button" onClick={handleLogout}>
-          Logout
-        </button>
-      </div>
-      <ToggleWrapper buttonLabel="Create a new blog" ref={createBlogRef}>
-        <CreateBlog
-          handleCreateBlog={handleCreateBlog}
-          blogAddSuccess={blogAddSuccess}
-          setBlogAddSuccess={setBlogAddSuccess}
+    <NotificationContext.Provider>
+      <div>
+        <Notification
+          successMessage={successMessage}
+          errorMessages={errorMessages}
         />
-      </ToggleWrapper>
-
-      <h2>Blogs</h2>
-      <div className="blog-list-wrapper">
-        {blogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            usersUsername={user.username}
-            handleDeleteBlog={handleDeleteBlog}
-            handleIncrementLikes={handleIncrementLikes}
+        <div className="container user-info">
+          <p>{user.name} logged in</p>{" "}
+          <button type="button" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
+        <ToggleWrapper buttonLabel="Create a new blog" ref={createBlogRef}>
+          <CreateBlog
+            handleCreateBlog={handleCreateBlog}
+            blogAddSuccess={blogAddSuccess}
+            setBlogAddSuccess={setBlogAddSuccess}
           />
-        ))}
+        </ToggleWrapper>
+
+        <h2>Blogs</h2>
+        <div className="blog-list-wrapper">
+          {blogs.map((blog) => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              usersUsername={user.username}
+              handleDeleteBlog={handleDeleteBlog}
+              handleIncrementLikes={handleIncrementLikes}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    </NotificationContext.Provider>
   );
 };
 
