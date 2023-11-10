@@ -1,17 +1,17 @@
 .blog-item {
-    padding: 10px;
-    border-bottom: 1px solid white;
-    .top-wrapper {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid white;
+  .top-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  span {
+    display: block;
+    padding: 5px 0;
+    .likes-count {
+      display: inline-block;
+      padding: 0;
     }
-    span {
-        display: block;
-        padding: 5px 0;
-        .likes-count {
-            display: inline-block;
-            padding: 0;
-        }
-    }
+  }
 }

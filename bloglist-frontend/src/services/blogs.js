@@ -1,38 +1,38 @@
-import axios from 'axios'
-const baseUrl = '/api/blogs'
+import axios from "axios";
+const baseUrl = "/api/blogs";
 
 const getAll = () => {
-  const request = axios.get(baseUrl)
-  return request.then(response => response.data)
-}
+  const request = axios.get(baseUrl);
+  return request.then((response) => response.data);
+};
 
 const create = async (params, token) => {
-  console.log('create blog', params, token)
+  console.log("create blog", params, token);
   const config = {
-    headers: { Authorization: `bearer ${token}` }
-  }
+    headers: { Authorization: `bearer ${token}` },
+  };
   try {
-    const response = await axios.post(baseUrl, params, config)
-    return response.data
+    const response = await axios.post(baseUrl, params, config);
+    return response.data;
   } catch (exception) {
-    console.log('exception', exception)
-    return exception
+    console.log("exception", exception);
+    return exception;
   }
-}
+};
 
 const deleteBlog = async (blogId, token) => {
-  console.log('delete blog', blogId)
+  console.log("delete blog", blogId);
   const config = {
-    headers: { Authorization: `bearer ${token}` }
-  }
+    headers: { Authorization: `bearer ${token}` },
+  };
   try {
-    const response = await axios.delete(`${baseUrl}/${blogId}`, config)
-    return response.data
+    const response = await axios.delete(`${baseUrl}/${blogId}`, config);
+    return response.data;
   } catch (exception) {
-    console.log('exception', exception)
-    return exception
+    console.log("exception", exception);
+    return exception;
   }
-}
+};
 
 const incrementLikes = async (params) => {
   const body = {
@@ -40,15 +40,15 @@ const incrementLikes = async (params) => {
     likes: params.likes + 1,
     author: params.author,
     title: params.title,
-    url: params.url
-  }
+    url: params.url,
+  };
 
   try {
-    const response = await axios.post(`${baseUrl}/${params.id}`, body)
-    return response.data
+    const response = await axios.post(`${baseUrl}/${params.id}`, body);
+    return response.data;
   } catch (exception) {
-    console.log('exception', exception)
+    console.log("exception", exception);
   }
-}
+};
 
-export default { getAll, create, deleteBlog, incrementLikes }
+export default { getAll, create, deleteBlog, incrementLikes };

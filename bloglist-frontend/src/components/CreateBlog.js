@@ -1,29 +1,29 @@
-import { useEffect, useState } from 'react'
-import PropTypes from 'prop-types'
+import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 
 const CreateBlog = (props) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [url, setUrl] = useState("");
 
   const addBlog = (event) => {
-    event.preventDefault()
-    props.setBlogAddSuccess(false)
+    event.preventDefault();
+    props.setBlogAddSuccess(false);
 
-    props.handleCreateBlog(title, author, url)
-  }
+    props.handleCreateBlog(title, author, url);
+  };
 
   useEffect(() => {
     if (props.blogAddSuccess) {
-      resetForm()
+      resetForm();
     }
-  }, [props.blogAddSuccess])
+  }, [props.blogAddSuccess]);
 
   const resetForm = () => {
-    setTitle('')
-    setAuthor('')
-    setUrl('')
-  }
+    setTitle("");
+    setAuthor("");
+    setUrl("");
+  };
 
   return (
     <div>
@@ -59,16 +59,18 @@ const CreateBlog = (props) => {
             onChange={({ target }) => setUrl(target.value)}
           ></input>
         </div>
-        <button type="submit" id="submitCreateBlogButton">Create</button>
+        <button type="submit" id="submitCreateBlogButton">
+          Create
+        </button>
       </form>
     </div>
-  )
-}
+  );
+};
 
 CreateBlog.propTypes = {
   handleCreateBlog: PropTypes.func.isRequired,
   blogAddSuccess: PropTypes.bool.isRequired,
-  setBlogAddSuccess: PropTypes.func.isRequired
-}
+  setBlogAddSuccess: PropTypes.func.isRequired,
+};
 
-export default CreateBlog
+export default CreateBlog;

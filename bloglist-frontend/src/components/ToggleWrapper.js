@@ -1,38 +1,40 @@
-import { useImperativeHandle, useState, forwardRef } from 'react'
-import PropTypes from 'prop-types'
+import { useImperativeHandle, useState, forwardRef } from "react";
+import PropTypes from "prop-types";
 
 const ToggleWrapper = forwardRef((props, refs) => {
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(false);
 
-  const hideWhenVisible = { display: visible ? 'none' : '' }
-  const showWhenVisible = { display: visible ? '' : 'none' }
+  const hideWhenVisible = { display: visible ? "none" : "" };
+  const showWhenVisible = { display: visible ? "" : "none" };
 
   const toggleVisible = () => {
-    setVisible(!visible)
-  }
+    setVisible(!visible);
+  };
 
   useImperativeHandle(refs, () => {
-    return toggleVisible
-  })
+    return toggleVisible;
+  });
 
   return (
     <div className="toggle-wrapper container">
       <div style={hideWhenVisible}>
-        <button onClick={toggleVisible} id="openCreateBlogButton">{props.buttonLabel}</button>
+        <button onClick={toggleVisible} id="openCreateBlogButton">
+          {props.buttonLabel}
+        </button>
       </div>
       <div style={showWhenVisible}>
         {props.children}
         <button onClick={toggleVisible}>Cancel</button>
       </div>
     </div>
-  )
-})
+  );
+});
 
-ToggleWrapper.displayName = 'ToggleWrapper'
+ToggleWrapper.displayName = "ToggleWrapper";
 
 ToggleWrapper.propTypes = {
   buttonLabel: PropTypes.string.isRequired,
-  id: PropTypes.string
-}
+  id: PropTypes.string,
+};
 
-export default ToggleWrapper
+export default ToggleWrapper;

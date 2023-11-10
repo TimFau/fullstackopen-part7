@@ -1,39 +1,49 @@
 .blog-item {
   padding: 10px;
-  border-bottom: 1px solid white; }
-  .blog-item .top-wrapper {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between; }
-  .blog-item span {
-    display: block;
-    padding: 5px 0; }
-    .blog-item span .likes-count {
-      display: inline-block;
-      padding: 0; }
+  border-bottom: 1px solid white;
+}
+.blog-item .top-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.blog-item span {
+  display: block;
+  padding: 5px 0;
+}
+.blog-item span .likes-count {
+  display: inline-block;
+  padding: 0;
+}
 
 .bold {
-  font-weight: bold; }
+  font-weight: bold;
+}
 
 .error,
 .success {
   border: 3px solid red;
   padding: 10px 5px;
-  background: #eee; }
+  background: #eee;
+}
 
 .success {
-  border-color: green; }
+  border-color: green;
+}
 
 .input-wrap {
-  padding: 0 0 10px 0; }
+  padding: 0 0 10px 0;
+}
 
 .input-wrap label {
   padding: 0 5px 0 0;
   min-width: 75px;
-  display: inline-block; }
+  display: inline-block;
+}
 
 .input-wrap input {
-  height: 25px; }
+  height: 25px;
+}
 
 button {
   height: 50px;
@@ -42,26 +52,32 @@ button {
   background: #000;
   color: #fff;
   border-color: #000;
-  font-weight: bold; }
-  button.button-inline {
-    height: auto;
-    min-width: auto;
-    margin-left: 10px; }
+  font-weight: bold;
+}
+button.button-inline {
+  height: auto;
+  min-width: auto;
+  margin-left: 10px;
+}
 
 button:hover {
   cursor: pointer;
   background: #202020;
-  border-color: #202020; }
+  border-color: #202020;
+}
 
 .container {
   padding: 15px;
   background: #eee;
-  margin-bottom: 15px; }
+  margin-bottom: 15px;
+}
 
 .user-info {
   display: flex;
-  justify-content: space-between; }
+  justify-content: space-between;
+}
 
 .toggle-wrapper div + div {
   display: flex;
-  justify-content: space-between; }
+  justify-content: space-between;
+}
