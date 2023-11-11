@@ -1,7 +1,7 @@
 /* eslint-env node */
 module.exports = {
   "env": {
-        "browser": true,
+        "browser": false,
         "es6": true,
         "jest/globals": true,
         "cypress/globals": true
@@ -43,7 +43,8 @@ module.exports = {
         ],
         "no-console": 0,
         "react/prop-types": 0,
-        "react/react-in-jsx-scope": "off"
+        "react/react-in-jsx-scope": "off",
+        "no-unused-vars": 1,
     },
     "settings": {
         "react": {

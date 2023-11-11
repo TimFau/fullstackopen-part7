@@ -4,17 +4,18 @@ import CreateBlog from "./components/CreateBlog";
 import ToggleWrapper from "./components/ToggleWrapper";
 import Notification from "./components/Notification";
 import NotificationContext from "./context/NotificationContext";
+import BlogsContext from "./context/BlogsContext";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import "./styles/main.css";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [blogAddSuccess, setBlogAddSuccess] = useState(false);
   const [, notificationDispatch] = useContext(NotificationContext);
+  const [blogsState, blogsDispatch] = useContext(BlogsContext);
 
   const createBlogRef = useRef();
 
@@ -43,7 +44,10 @@ const App = () => {
   };
 
   const getBlogs = () => {
-    blogService.getAll().then((blogs) => setBlogs(sortBlogsByLikes(blogs)));
+    blogService.getAll().then((blogs) => blogsDispatch({
+      type: "setBlogs",
+      blogs: sortBlogsByLikes(blogs)
+    }));
   };
 
   const handleLogin = async (event) => {
@@ -52,7 +56,6 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password });
       setUser(user);
-      // console.log(user)
       setUsername("");
       setPassword("");
       localStorage.setItem("user", JSON.stringify(user));
@@ -79,6 +82,7 @@ const App = () => {
       );
 
       const response = newBlog.response;
+      console.log("handleCreateBlog response", newBlog);
       if (response && response.data.errors) {
         const errors = response.data.errors;
         const errorMessages = Object.values(errors).map(
@@ -90,8 +94,16 @@ const App = () => {
           type: "success",
           content: `Blog "${newBlog.title}" by ${newBlog.author} added`,
         });
-        getBlogs();
         createBlogRef.current();
+        // Provider username to blogState, since it's not included in this response
+        newBlog.user = {
+          id: newBlog.user,
+          username: user.username
+        };
+        blogsDispatch({
+          type: "addBlog",
+          newBlog
+        });
         setBlogAddSuccess(true);
       }
     } catch (exception) {
@@ -114,8 +126,8 @@ const App = () => {
           notificationDispatch({ type: "error", content: error });
           return false;
         }
+        blogsDispatch({ type: "deleteBlog", id: params.id });
         notificationDispatch({ type: "success", content: "Blog Deleted." });
-        getBlogs();
       }
     } catch (excetion) {
       console.log("Error deleting blog.", excetion);
@@ -180,7 +192,7 @@ const App = () => {
 
       <h2>Blogs</h2>
       <div className="blog-list-wrapper">
-        {blogs.map((blog) => (
+        {blogsState.blogs.map((blog) => (
           <Blog
             key={blog.id}
             blog={blog}
