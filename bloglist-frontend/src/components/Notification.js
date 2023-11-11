@@ -1,10 +1,14 @@
-const Notification = ({ successMessage, errorMessages }) => {
+import { useContext } from "react";
+import NotificationContext from "../context/NotificationContext";
+
+const Notification = () => {
+  const [state] = useContext(NotificationContext);
+
   return (
     <>
-      {successMessage && <p className="success">{successMessage}</p>}
-      {errorMessages.map((errorMessage, index) => (
-        <p className="error" key={index}>
-          {errorMessage}
+      {state.messages.map((msg, index) => (
+        <p className={state.type} key={index}>
+          {msg}
         </p>
       ))}
     </>

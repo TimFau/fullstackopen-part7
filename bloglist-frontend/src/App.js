@@ -1,22 +1,20 @@
-import { useState, useEffect, useRef, createContext } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import Blog from "./components/Blog";
 import CreateBlog from "./components/CreateBlog";
 import ToggleWrapper from "./components/ToggleWrapper";
 import Notification from "./components/Notification";
+import NotificationContext from "./context/NotificationContext";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import "./styles/main.css";
-
-const NotificationContext = createContext(null);
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessages, setErrorMessages] = useState([]);
-  const [successMessage, setSuccessMessage] = useState(null);
   const [blogAddSuccess, setBlogAddSuccess] = useState(false);
+  const [, notificationDispatch] = useContext(NotificationContext);
 
   const createBlogRef = useRef();
 
@@ -58,15 +56,18 @@ const App = () => {
       setUsername("");
       setPassword("");
       localStorage.setItem("user", JSON.stringify(user));
-      handleSetSuccessMessage("Logged in");
+      notificationDispatch({ type: "success", content: "Logged in" });
     } catch (exception) {
-      handleSetErrorMessages(["Username or Password is incorrect"]);
+      notificationDispatch({
+        type: "error",
+        content: ["Username or Password is incorrect"],
+      });
     }
   };
 
   const handleLogout = () => {
     setUser(null);
-    handleSetSuccessMessage("Logged out");
+    notificationDispatch({ type: "success", content: "Logged out" });
     localStorage.removeItem("user");
   };
 
@@ -83,17 +84,21 @@ const App = () => {
         const errorMessages = Object.values(errors).map(
           (error) => error.message,
         );
-        handleSetErrorMessages(errorMessages);
+        notificationDispatch({ type: "error", content: errorMessages });
       } else {
-        handleSetSuccessMessage(
-          `Blog "${newBlog.title}" by ${newBlog.author} added`,
-        );
+        notificationDispatch({
+          type: "success",
+          content: `Blog "${newBlog.title}" by ${newBlog.author} added`,
+        });
         getBlogs();
         createBlogRef.current();
         setBlogAddSuccess(true);
       }
     } catch (exception) {
-      handleSetErrorMessages(["Error creating blog."]);
+      notificationDispatch({
+        type: "error",
+        content: ["Error creating blog."],
+      });
     }
   };
 
@@ -106,10 +111,10 @@ const App = () => {
         const deletedBlog = await blogService.deleteBlog(params.id, user.token);
         if (deletedBlog.code === "ERR_BAD_REQUEST") {
           const error = deletedBlog.response.data.error;
-          handleSetErrorMessages(error);
+          notificationDispatch({ type: "error", content: error });
           return false;
         }
-        handleSetSuccessMessage("Blog Deleted.");
+        notificationDispatch({ type: "success", content: "Blog Deleted." });
         getBlogs();
       }
     } catch (excetion) {
@@ -122,35 +127,11 @@ const App = () => {
     return updatedBlog;
   };
 
-  const handleResetMessages = () => {
-    setErrorMessages([]);
-    setSuccessMessage(null);
-  };
-
-  const handleSetErrorMessages = (messages) => {
-    handleResetMessages();
-    setErrorMessages(typeof messages === "string" ? [messages] : messages);
-    setTimeout(() => {
-      handleResetMessages();
-    }, 5000);
-  };
-
-  const handleSetSuccessMessage = (message) => {
-    handleResetMessages();
-    setSuccessMessage(message);
-    setTimeout(() => {
-      handleResetMessages();
-    }, 5000);
-  };
-
   if (user === null) {
     return (
       <div>
         <h2>Log in</h2>
-        <Notification
-          successMessage={successMessage}
-          errorMessages={errorMessages}
-        />
+        <Notification />
         <form onSubmit={handleLogin} className="container">
           <div className="input-wrap">
             <label htmlFor="username">Username</label>
@@ -181,40 +162,35 @@ const App = () => {
   }
 
   return (
-    <NotificationContext.Provider>
-      <div>
-        <Notification
-          successMessage={successMessage}
-          errorMessages={errorMessages}
-        />
-        <div className="container user-info">
-          <p>{user.name} logged in</p>{" "}
-          <button type="button" onClick={handleLogout}>
-            Logout
-          </button>
-        </div>
-        <ToggleWrapper buttonLabel="Create a new blog" ref={createBlogRef}>
-          <CreateBlog
-            handleCreateBlog={handleCreateBlog}
-            blogAddSuccess={blogAddSuccess}
-            setBlogAddSuccess={setBlogAddSuccess}
-          />
-        </ToggleWrapper>
-
-        <h2>Blogs</h2>
-        <div className="blog-list-wrapper">
-          {blogs.map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              usersUsername={user.username}
-              handleDeleteBlog={handleDeleteBlog}
-              handleIncrementLikes={handleIncrementLikes}
-            />
-          ))}
-        </div>
+    <div>
+      <Notification />
+      <div className="container user-info">
+        <p>{user.name} logged in</p>{" "}
+        <button type="button" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
-    </NotificationContext.Provider>
+      <ToggleWrapper buttonLabel="Create a new blog" ref={createBlogRef}>
+        <CreateBlog
+          handleCreateBlog={handleCreateBlog}
+          blogAddSuccess={blogAddSuccess}
+          setBlogAddSuccess={setBlogAddSuccess}
+        />
+      </ToggleWrapper>
+
+      <h2>Blogs</h2>
+      <div className="blog-list-wrapper">
+        {blogs.map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            usersUsername={user.username}
+            handleDeleteBlog={handleDeleteBlog}
+            handleIncrementLikes={handleIncrementLikes}
+          />
+        ))}
+      </div>
+    </div>
   );
 };
 
