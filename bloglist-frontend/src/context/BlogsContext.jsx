@@ -3,27 +3,33 @@ import { createContext, useReducer } from "react";
 const BlogsContext = createContext(null);
 
 const blogsReducer = (state, action) => {
-    console.log("blogsReducer", action);
-    switch (action.type) {
-        case ("setBlogs"):
-            return {
-                blogs: action.blogs
-            };
-        case ("addBlog"):
-            return {
-                blogs: [...state.blogs, action.newBlog]
-            };
-        case ("deleteBlog"):
-            return {
-                blogs: state.blogs.filter((blog) => blog.id !== action.id)
-            };
-        default:
-            return state;
-    }
+  console.log("blogsReducer", action);
+  switch (action.type) {
+    case "setBlogs":
+      return {
+        blogs: action.blogs,
+      };
+    case "addBlog":
+      return {
+        blogs: [...state.blogs, action.newBlog],
+      };
+    case "deleteBlog":
+      return {
+        blogs: state.blogs.filter((blog) => blog.id !== action.id),
+      };
+    case "incrementLikes":
+      return {
+        blogs: state.blogs.map((blog) =>
+          blog.id === action.updatedBlog.id ? action.updatedBlog : blog,
+        ),
+      };
+    default:
+      return state;
+  }
 };
 
 const initialState = {
-    blogs: []
+  blogs: [],
 };
 
 export const BlogsContextProvider = (props) => {

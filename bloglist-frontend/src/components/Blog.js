@@ -1,6 +1,5 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-// import BlogsContext from "../context/BlogsContext";
 
 const Blog = ({
   blog,
@@ -9,20 +8,8 @@ const Blog = ({
   handleIncrementLikes,
 }) => {
   const [showMoreInfo, setShowMoreInfo] = useState(false);
-  const [currentBlog, setCurrentBlog] = useState(blog);
 
   const displayMoreInfo = showMoreInfo ? true : false;
-
-  const incrementLikes = async () => {
-    try {
-      const updatedBlog = await handleIncrementLikes(currentBlog);
-      setCurrentBlog(updatedBlog);
-    } catch (exception) {
-      console.loog(exception);
-    }
-  };
-
-  const currentLikes = (currentBlog && currentBlog.likes) || blog.likes; // fix for react-testing-library
   const isUsersBlog = blog.user.username === usersUsername;
 
   return (
@@ -43,11 +30,11 @@ const Blog = ({
         <div className="more-info">
           <a href={blog.url}>{blog.url}</a>
           <span>
-            Likes: <span className="likes-count">{currentLikes}</span>{" "}
+            Likes: <span className="likes-count">{blog.likes}</span>{" "}
             <button
               className="button-inline increment-likes-button"
               title="Increment Likes"
-              onClick={incrementLikes}
+              onClick={() => handleIncrementLikes(blog)}
             >
               like
             </button>

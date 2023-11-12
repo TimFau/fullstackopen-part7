@@ -6,8 +6,8 @@ import { BlogsContextProvider } from "./context/BlogsContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BlogsContextProvider>
-  <NotificationContextProvider>
-    <App />
-  </NotificationContextProvider>
+    <NotificationContextProvider>
+      <App />
+    </NotificationContextProvider>
   </BlogsContextProvider>,
 );

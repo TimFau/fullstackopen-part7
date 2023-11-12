@@ -44,10 +44,12 @@ const App = () => {
   };
 
   const getBlogs = () => {
-    blogService.getAll().then((blogs) => blogsDispatch({
-      type: "setBlogs",
-      blogs: sortBlogsByLikes(blogs)
-    }));
+    blogService.getAll().then((blogs) =>
+      blogsDispatch({
+        type: "setBlogs",
+        blogs: sortBlogsByLikes(blogs),
+      }),
+    );
   };
 
   const handleLogin = async (event) => {
@@ -98,11 +100,11 @@ const App = () => {
         // Provider username to blogState, since it's not included in this response
         newBlog.user = {
           id: newBlog.user,
-          username: user.username
+          username: user.username,
         };
         blogsDispatch({
           type: "addBlog",
-          newBlog
+          newBlog,
         });
         setBlogAddSuccess(true);
       }
@@ -135,8 +137,13 @@ const App = () => {
   };
 
   const handleIncrementLikes = async (blog) => {
-    const updatedBlog = await blogService.incrementLikes(blog);
-    return updatedBlog;
+    try {
+      const updatedBlog = await blogService.incrementLikes(blog);
+      updatedBlog.user = blog.user;
+      blogsDispatch({ type: "incrementLikes", updatedBlog });
+    } catch (exception) {
+      console.error("handleIncrementLikes error", exception);
+    }
   };
 
   if (user === null) {
