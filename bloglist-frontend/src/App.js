@@ -4,17 +4,18 @@ import CreateBlog from './components/CreateBlog'
 import ToggleWrapper from './components/ToggleWrapper'
 import Notification from './components/Notification'
 import NotificationContext from './context/NotificationContext'
+import UserContext from './context/UserContext'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import './styles/main.css'
 
 const App = () => {
-  const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [blogAddSuccess, setBlogAddSuccess] = useState(false)
   const [, notificationDispatch] = useContext(NotificationContext)
+  const [userState, userDispatch] = useContext(UserContext)
 
   const createBlogRef = useRef()
 
@@ -22,11 +23,11 @@ const App = () => {
 
   useEffect(() => {
     let lsUser = localStorage.getItem('user')
-    if (lsUser && !user) {
+    if (lsUser && !userState.user) {
       const user = JSON.parse(lsUser)
-      setUser(user)
+      userDispatch({ type: 'set', user })
     }
-  }, [user])
+  }, [userState.user])
 
   const blogsResult = useQuery({
     queryKey: ['blogs'],
@@ -38,7 +39,7 @@ const App = () => {
 
     try {
       const user = await loginService.login({ username, password })
-      setUser(user)
+      userDispatch({ type: 'set', user })
       setUsername('')
       setPassword('')
       localStorage.setItem('user', JSON.stringify(user))
@@ -52,7 +53,7 @@ const App = () => {
   }
 
   const handleLogout = () => {
-    setUser(null)
+    userDispatch({ type: 'reset' })
     notificationDispatch({ type: 'success', content: 'Logged out' })
     localStorage.removeItem('user')
   }
@@ -64,7 +65,7 @@ const App = () => {
         author,
         url,
       },
-      token: user.token,
+      token: userState.user.token,
     })
   }
 
@@ -79,7 +80,7 @@ const App = () => {
       // Provider username to blogState, since it's not included in this response
       newBlog.user = {
         id: newBlog.user,
-        username: user.username,
+        username: userState.user.username,
       }
       queryClient.invalidateQueries(['blogs'])
       setBlogAddSuccess(true)
@@ -105,7 +106,7 @@ const App = () => {
       `Are you sure you want to delete ${params.name} by ${params.author}?`,
     )
     const blogId = params.id
-    const token = user.token
+    const token = userState.user.token
     if (confirmDelete) {
       deleteBlogMutation.mutate({
         blogId,
@@ -142,7 +143,7 @@ const App = () => {
     },
   })
 
-  if (user === null) {
+  if (userState.user === null) {
     return (
       <div>
         <h2>Log in</h2>
@@ -180,7 +181,7 @@ const App = () => {
     <div>
       <Notification />
       <div className="container user-info">
-        <p>{user.name} logged in</p>{' '}
+        <p>{userState.user.name} logged in</p>{' '}
         <button type="button" onClick={handleLogout}>
           Logout
         </button>
@@ -200,7 +201,7 @@ const App = () => {
             <Blog
               key={blog.id}
               blog={blog}
-              usersUsername={user.username}
+              usersUsername={userState.user.username}
               handleDeleteBlog={handleDeleteBlog}
               handleIncrementLikes={handleIncrementLikes}
             />
