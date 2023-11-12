@@ -1,61 +1,61 @@
-import { useState, useEffect, useRef, useContext } from 'react';
-import Blog from './components/Blog';
-import CreateBlog from './components/CreateBlog';
-import ToggleWrapper from './components/ToggleWrapper';
-import Notification from './components/Notification';
-import NotificationContext from './context/NotificationContext';
-import blogService from './services/blogs';
-import loginService from './services/login';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import './styles/main.css';
+import { useState, useEffect, useRef, useContext } from 'react'
+import Blog from './components/Blog'
+import CreateBlog from './components/CreateBlog'
+import ToggleWrapper from './components/ToggleWrapper'
+import Notification from './components/Notification'
+import NotificationContext from './context/NotificationContext'
+import blogService from './services/blogs'
+import loginService from './services/login'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import './styles/main.css'
 
 const App = () => {
-  const [user, setUser] = useState(null);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [blogAddSuccess, setBlogAddSuccess] = useState(false);
-  const [, notificationDispatch] = useContext(NotificationContext);
+  const [user, setUser] = useState(null)
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [blogAddSuccess, setBlogAddSuccess] = useState(false)
+  const [, notificationDispatch] = useContext(NotificationContext)
 
-  const createBlogRef = useRef();
+  const createBlogRef = useRef()
 
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   useEffect(() => {
-    let lsUser = localStorage.getItem('user');
+    let lsUser = localStorage.getItem('user')
     if (lsUser && !user) {
-      const user = JSON.parse(lsUser);
-      setUser(user);
+      const user = JSON.parse(lsUser)
+      setUser(user)
     }
-  }, [user]);
+  }, [user])
 
   const blogsResult = useQuery({
     queryKey: ['blogs'],
     queryFn: () => blogService.getAll(),
-  });
+  })
 
   const handleLogin = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     try {
-      const user = await loginService.login({ username, password });
-      setUser(user);
-      setUsername('');
-      setPassword('');
-      localStorage.setItem('user', JSON.stringify(user));
-      notificationDispatch({ type: 'success', content: 'Logged in' });
+      const user = await loginService.login({ username, password })
+      setUser(user)
+      setUsername('')
+      setPassword('')
+      localStorage.setItem('user', JSON.stringify(user))
+      notificationDispatch({ type: 'success', content: 'Logged in' })
     } catch (exception) {
       notificationDispatch({
         type: 'error',
         content: ['Username or Password is incorrect'],
-      });
+      })
     }
-  };
+  }
 
   const handleLogout = () => {
-    setUser(null);
-    notificationDispatch({ type: 'success', content: 'Logged out' });
-    localStorage.removeItem('user');
-  };
+    setUser(null)
+    notificationDispatch({ type: 'success', content: 'Logged out' })
+    localStorage.removeItem('user')
+  }
 
   const handleCreateBlog = (title, author, url) => {
     createBlogMutation.mutate({
@@ -65,8 +65,8 @@ const App = () => {
         url,
       },
       token: user.token,
-    });
-  };
+    })
+  }
 
   const createBlogMutation = useMutation({
     mutationFn: blogService.create,
@@ -74,73 +74,73 @@ const App = () => {
       notificationDispatch({
         type: 'success',
         content: `Blog "${newBlog.title}" by ${newBlog.author} added`,
-      });
-      createBlogRef.current();
+      })
+      createBlogRef.current()
       // Provider username to blogState, since it's not included in this response
       newBlog.user = {
         id: newBlog.user,
         username: user.username,
-      };
-      queryClient.invalidateQueries(['blogs']);
-      setBlogAddSuccess(true);
+      }
+      queryClient.invalidateQueries(['blogs'])
+      setBlogAddSuccess(true)
     },
     onError: (error) => {
       if (error.response.data.error) {
         notificationDispatch({
           type: 'error',
           content: error.response.data.error,
-        });
+        })
       }
       if (error.response.data.errors) {
         const errorMessages = Object.values(error.response.data.errors).map(
           (error) => error.message,
-        );
-        notificationDispatch({ type: 'error', content: errorMessages });
+        )
+        notificationDispatch({ type: 'error', content: errorMessages })
       }
     },
-  });
+  })
 
   const handleDeleteBlog = async (params) => {
     const confirmDelete = window.confirm(
       `Are you sure you want to delete ${params.name} by ${params.author}?`,
-    );
-    const blogId = params.id;
-    const token = user.token;
+    )
+    const blogId = params.id
+    const token = user.token
     if (confirmDelete) {
       deleteBlogMutation.mutate({
         blogId,
         token,
-      });
+      })
     }
-  };
+  }
 
   const deleteBlogMutation = useMutation({
     mutationFn: blogService.deleteBlog,
     onSuccess: () => {
-      queryClient.invalidateQueries('blogs');
-      notificationDispatch({ type: 'success', content: 'Blog Deleted.' });
+      queryClient.invalidateQueries('blogs')
+      notificationDispatch({ type: 'success', content: 'Blog Deleted.' })
     },
     onError: (data) => {
-      console.error('onError', data);
-      const error = data.response.data.error;
-      notificationDispatch({ type: 'error', content: error });
+      console.error('onError', data)
+      const error = data.response.data.error
+      notificationDispatch({ type: 'error', content: error })
     },
-  });
+  })
 
   const handleIncrementLikes = (blog) => {
-    incrementLikesMutation.mutate({ blog });
-  };
+    incrementLikesMutation.mutate({ blog })
+  }
 
   const incrementLikesMutation = useMutation({
     mutationFn: blogService.incrementLikes,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(['blogs']);
-      console.log('onSuccess', data);
+      queryClient.invalidateQueries(['blogs'])
+      console.log('onSuccess', data)
     },
     onError: (data) => {
-      console.log('onError', data);
+      console.log('onError', data)
     },
-  });
+  })
 
   if (user === null) {
     return (
@@ -173,7 +173,7 @@ const App = () => {
           </button>
         </form>
       </div>
-    );
+    )
   }
 
   return (
@@ -207,7 +207,7 @@ const App = () => {
           ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App

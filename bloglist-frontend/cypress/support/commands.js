@@ -29,18 +29,18 @@ Cypress.Commands.add('createAccount', ({ username, password, name }) => {
     username,
     password,
     name,
-  });
-});
+  })
+})
 
 Cypress.Commands.add('login', ({ username, password }) => {
   cy.request('POST', `${Cypress.env('BACKEND')}/login`, {
     username,
     password,
   }).then(({ body }) => {
-    localStorage.setItem('user', JSON.stringify(body));
-    cy.visit('');
-  });
-});
+    localStorage.setItem('user', JSON.stringify(body))
+    cy.visit('')
+  })
+})
 
 Cypress.Commands.add('createBlog', ({ title, author, url }) => {
   cy.request({
@@ -50,6 +50,6 @@ Cypress.Commands.add('createBlog', ({ title, author, url }) => {
     headers: {
       Authorization: `bearer ${JSON.parse(localStorage.getItem('user')).token}`,
     },
-  });
-  cy.visit('');
-});
+  })
+  cy.visit('')
+})

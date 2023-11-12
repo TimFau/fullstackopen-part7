@@ -29,4 +29,4 @@ export const blogs = [
     author: 'Wired',
     url: 'https://www.wired.com/',
   },
-];
+]

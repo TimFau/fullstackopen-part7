@@ -1,8 +1,8 @@
-import { useContext } from 'react';
-import NotificationContext from '../context/NotificationContext';
+import { useContext } from 'react'
+import NotificationContext from '../context/NotificationContext'
 
 const Notification = () => {
-  const [state] = useContext(NotificationContext);
+  const [state] = useContext(NotificationContext)
 
   return (
     <>
@@ -12,7 +12,7 @@ const Notification = () => {
         </p>
       ))}
     </>
-  );
-};
+  )
+}
 
-export default Notification;
+export default Notification

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const Blog = ({
   blog,
@@ -7,10 +7,10 @@ const Blog = ({
   handleDeleteBlog,
   handleIncrementLikes,
 }) => {
-  const [showMoreInfo, setShowMoreInfo] = useState(false);
+  const [showMoreInfo, setShowMoreInfo] = useState(false)
 
-  const displayMoreInfo = showMoreInfo ? true : false;
-  const isUsersBlog = blog.user.username === usersUsername;
+  const displayMoreInfo = showMoreInfo ? true : false
+  const isUsersBlog = blog.user.username === usersUsername
 
   return (
     <div className={`blog-item container ${isUsersBlog ? 'users-blog' : ''}`}>
@@ -51,14 +51,14 @@ const Blog = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   usersUsername: PropTypes.string.isRequired,
   handleDeleteBlog: PropTypes.func.isRequired,
   handleIncrementLikes: PropTypes.func.isRequired,
-};
+}
 
-export default Blog;
+export default Blog
