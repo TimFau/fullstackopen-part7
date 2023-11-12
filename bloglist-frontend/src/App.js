@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useContext } from 'react'
+import Login from './components/Login'
 import Blog from './components/Blog'
 import CreateBlog from './components/CreateBlog'
 import ToggleWrapper from './components/ToggleWrapper'
@@ -6,13 +7,10 @@ import Notification from './components/Notification'
 import NotificationContext from './context/NotificationContext'
 import UserContext from './context/UserContext'
 import blogService from './services/blogs'
-import loginService from './services/login'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import './styles/main.css'
 
 const App = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [blogAddSuccess, setBlogAddSuccess] = useState(false)
   const [, notificationDispatch] = useContext(NotificationContext)
   const [userState, userDispatch] = useContext(UserContext)
@@ -33,24 +31,6 @@ const App = () => {
     queryKey: ['blogs'],
     queryFn: () => blogService.getAll(),
   })
-
-  const handleLogin = async (event) => {
-    event.preventDefault()
-
-    try {
-      const user = await loginService.login({ username, password })
-      userDispatch({ type: 'set', user })
-      setUsername('')
-      setPassword('')
-      localStorage.setItem('user', JSON.stringify(user))
-      notificationDispatch({ type: 'success', content: 'Logged in' })
-    } catch (exception) {
-      notificationDispatch({
-        type: 'error',
-        content: ['Username or Password is incorrect'],
-      })
-    }
-  }
 
   const handleLogout = () => {
     userDispatch({ type: 'reset' })
@@ -144,37 +124,7 @@ const App = () => {
   })
 
   if (userState.user === null) {
-    return (
-      <div>
-        <h2>Log in</h2>
-        <Notification />
-        <form onSubmit={handleLogin} className="container">
-          <div className="input-wrap">
-            <label htmlFor="username">Username</label>
-            <input
-              id="username"
-              type="text"
-              value={username}
-              name="Username"
-              onChange={({ target }) => setUsername(target.value)}
-            ></input>
-          </div>
-          <div className="input-wrap">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="text"
-              value={password}
-              name="Password"
-              onChange={({ target }) => setPassword(target.value)}
-            ></input>
-          </div>
-          <button type="submit" id="loginButton">
-            Login
-          </button>
-        </form>
-      </div>
-    )
+    return <Login />
   }
 
   return (
