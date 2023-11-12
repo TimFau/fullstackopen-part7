@@ -5,10 +5,10 @@ import UserContext from '../context/UserContext'
 import NotificationContext from '../context/NotificationContext'
 
 const Login = () => {
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-    const [, userDispatch] = useContext(UserContext)
-    const [, notificationDispatch] = useContext(NotificationContext)
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [, userDispatch] = useContext(UserContext)
+  const [, notificationDispatch] = useContext(NotificationContext)
 
   const handleLogin = async (event) => {
     event.preventDefault()
