@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@tanstack/react-query": "^5.8.2",
     "axios": "^1.2.3",
     "node-sass": "^7.0.3",
     "prop-types": "^15.8.1",

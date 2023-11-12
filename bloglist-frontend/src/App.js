@@ -4,9 +4,9 @@ import CreateBlog from "./components/CreateBlog";
 import ToggleWrapper from "./components/ToggleWrapper";
 import Notification from "./components/Notification";
 import NotificationContext from "./context/NotificationContext";
-import BlogsContext from "./context/BlogsContext";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import "./styles/main.css";
 
 const App = () => {
@@ -15,42 +15,23 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [blogAddSuccess, setBlogAddSuccess] = useState(false);
   const [, notificationDispatch] = useContext(NotificationContext);
-  const [blogsState, blogsDispatch] = useContext(BlogsContext);
 
   const createBlogRef = useRef();
 
+  const queryClient = useQueryClient();
+
   useEffect(() => {
     let lsUser = localStorage.getItem("user");
-    if (user) {
-      getBlogs();
-    }
     if (lsUser && !user) {
       const user = JSON.parse(lsUser);
       setUser(user);
     }
   }, [user]);
 
-  const sortBlogsByLikes = (blogs) => {
-    try {
-      // Note: toSorted will return an error in electron and some other browsers
-      const sortedBlogs = blogs.toSorted((a, b) => {
-        return b.likes - a.likes;
-      });
-      return sortedBlogs;
-    } catch (error) {
-      console.error("sortedBlogs error: ", error);
-      return blogs;
-    }
-  };
-
-  const getBlogs = () => {
-    blogService.getAll().then((blogs) =>
-      blogsDispatch({
-        type: "setBlogs",
-        blogs: sortBlogsByLikes(blogs),
-      }),
-    );
-  };
+  const blogsResult = useQuery({
+    queryKey: ["blogs"],
+    queryFn: () => blogService.getAll(),
+  });
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -76,75 +57,90 @@ const App = () => {
     localStorage.removeItem("user");
   };
 
-  const handleCreateBlog = async (title, author, url) => {
-    try {
-      const newBlog = await blogService.create(
-        { title, author, url },
-        user.token,
-      );
+  const handleCreateBlog = (title, author, url) => {
+    createBlogMutation.mutate({
+      data: {
+        title,
+        author,
+        url,
+      },
+      token: user.token,
+    });
+  };
 
-      const response = newBlog.response;
-      console.log("handleCreateBlog response", newBlog);
-      if (response && response.data.errors) {
-        const errors = response.data.errors;
-        const errorMessages = Object.values(errors).map(
+  const createBlogMutation = useMutation({
+    mutationFn: blogService.create,
+    onSuccess: (newBlog) => {
+      notificationDispatch({
+        type: "success",
+        content: `Blog "${newBlog.title}" by ${newBlog.author} added`,
+      });
+      createBlogRef.current();
+      // Provider username to blogState, since it's not included in this response
+      newBlog.user = {
+        id: newBlog.user,
+        username: user.username,
+      };
+      queryClient.invalidateQueries(["blogs"]);
+      setBlogAddSuccess(true);
+    },
+    onError: (error) => {
+      if (error.response.data.error) {
+        notificationDispatch({
+          type: "error",
+          content: error.response.data.error,
+        });
+      }
+      if (error.response.data.errors) {
+        const errorMessages = Object.values(error.response.data.errors).map(
           (error) => error.message,
         );
         notificationDispatch({ type: "error", content: errorMessages });
-      } else {
-        notificationDispatch({
-          type: "success",
-          content: `Blog "${newBlog.title}" by ${newBlog.author} added`,
-        });
-        createBlogRef.current();
-        // Provider username to blogState, since it's not included in this response
-        newBlog.user = {
-          id: newBlog.user,
-          username: user.username,
-        };
-        blogsDispatch({
-          type: "addBlog",
-          newBlog,
-        });
-        setBlogAddSuccess(true);
       }
-    } catch (exception) {
-      notificationDispatch({
-        type: "error",
-        content: ["Error creating blog."],
+    },
+  });
+
+  const handleDeleteBlog = async (params) => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete ${params.name} by ${params.author}?`,
+    );
+    const blogId = params.id;
+    const token = user.token;
+    if (confirmDelete) {
+      deleteBlogMutation.mutate({
+        blogId,
+        token,
       });
     }
   };
 
-  const handleDeleteBlog = async (params) => {
-    try {
-      const confirmDelete = window.confirm(
-        `Are you sure you want to delete ${params.name} by ${params.author}?`,
-      );
-      if (confirmDelete) {
-        const deletedBlog = await blogService.deleteBlog(params.id, user.token);
-        if (deletedBlog.code === "ERR_BAD_REQUEST") {
-          const error = deletedBlog.response.data.error;
-          notificationDispatch({ type: "error", content: error });
-          return false;
-        }
-        blogsDispatch({ type: "deleteBlog", id: params.id });
-        notificationDispatch({ type: "success", content: "Blog Deleted." });
-      }
-    } catch (excetion) {
-      console.log("Error deleting blog.", excetion);
-    }
+  const deleteBlogMutation = useMutation({
+    mutationFn: blogService.deleteBlog,
+    onSuccess: () => {
+      queryClient.invalidateQueries("blogs");
+      notificationDispatch({ type: "success", content: "Blog Deleted." });
+    },
+    onError: (data) => {
+      console.error("onError", data);
+      const error = data.response.data.error;
+      notificationDispatch({ type: "error", content: error });
+    },
+  });
+
+  const handleIncrementLikes = (blog) => {
+    incrementLikesMutation.mutate({ blog });
   };
 
-  const handleIncrementLikes = async (blog) => {
-    try {
-      const updatedBlog = await blogService.incrementLikes(blog);
-      updatedBlog.user = blog.user;
-      blogsDispatch({ type: "incrementLikes", updatedBlog });
-    } catch (exception) {
-      console.error("handleIncrementLikes error", exception);
-    }
-  };
+  const incrementLikesMutation = useMutation({
+    mutationFn: blogService.incrementLikes,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["blogs"]);
+      console.log("onSuccess", data);
+    },
+    onError: (data) => {
+      console.log("onError", data);
+    },
+  });
 
   if (user === null) {
     return (
@@ -199,15 +195,16 @@ const App = () => {
 
       <h2>Blogs</h2>
       <div className="blog-list-wrapper">
-        {blogsState.blogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            usersUsername={user.username}
-            handleDeleteBlog={handleDeleteBlog}
-            handleIncrementLikes={handleIncrementLikes}
-          />
-        ))}
+        {blogsResult.isSuccess &&
+          blogsResult.data.map((blog) => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              usersUsername={user.username}
+              handleDeleteBlog={handleDeleteBlog}
+              handleIncrementLikes={handleIncrementLikes}
+            />
+          ))}
       </div>
     </div>
   );
