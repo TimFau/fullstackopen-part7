@@ -1,26 +1,26 @@
-import { createContext, useReducer, useEffect } from "react";
+import { createContext, useReducer, useEffect } from 'react';
 
 const NotificationContext = createContext(null);
 
 const notificationReducer = (state, action) => {
   const messages = action.content;
-  const isString = typeof messages === "string";
+  const isString = typeof messages === 'string';
   const handleSetMessages = () => {
     return isString ? [messages] : messages;
   };
   switch (action.type) {
-    case "success":
+    case 'success':
       return {
         messages: handleSetMessages(),
         type: action.type,
       };
-    case "error": {
+    case 'error': {
       return {
         messages: handleSetMessages(),
         type: action.type,
       };
     }
-    case "reset": {
+    case 'reset': {
       return {
         messages: [],
         type: action.type,
@@ -33,7 +33,7 @@ const notificationReducer = (state, action) => {
 
 const initialState = {
   messages: [],
-  type: "reset",
+  type: 'reset',
 };
 
 export const NotificationContextProvider = (props) => {
@@ -41,13 +41,13 @@ export const NotificationContextProvider = (props) => {
 
   useEffect(() => {
     let timeout;
-    if (state.type !== "reset") {
+    if (state.type !== 'reset') {
       timeout = setTimeout(() => {
-        dispatch({ type: "reset" });
+        dispatch({ type: 'reset' });
       }, 5000);
     }
     return () => {
-      console.log("clearTimeout");
+      console.log('clearTimeout');
       clearTimeout(timeout);
     };
   }, [state]);

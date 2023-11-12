@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
+import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 
 const CreateBlog = (props) => {
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
 
   const addBlog = (event) => {
     event.preventDefault();
@@ -20,9 +20,9 @@ const CreateBlog = (props) => {
   }, [props.blogAddSuccess]);
 
   const resetForm = () => {
-    setTitle("");
-    setAuthor("");
-    setUrl("");
+    setTitle('');
+    setAuthor('');
+    setUrl('');
   };
 
   return (

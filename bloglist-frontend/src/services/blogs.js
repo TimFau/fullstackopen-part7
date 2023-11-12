@@ -1,5 +1,5 @@
-import axios from "axios";
-const baseUrl = "/api/blogs";
+import axios from 'axios';
+const baseUrl = '/api/blogs';
 
 const sortBlogsByLikes = (blogs) => {
   try {
@@ -9,7 +9,7 @@ const sortBlogsByLikes = (blogs) => {
     });
     return sortedBlogs;
   } catch (error) {
-    console.error("sortedBlogs error: ", error);
+    console.error('sortedBlogs error: ', error);
     return blogs;
   }
 };

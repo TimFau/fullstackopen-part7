@@ -1,5 +1,5 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 
 const Blog = ({
   blog,
@@ -13,7 +13,7 @@ const Blog = ({
   const isUsersBlog = blog.user.username === usersUsername;
 
   return (
-    <div className={`blog-item container ${isUsersBlog ? "users-blog" : ""}`}>
+    <div className={`blog-item container ${isUsersBlog ? 'users-blog' : ''}`}>
       <div className="top-wrapper">
         <div className="blog-info">
           <span className="bold">{blog.title}</span>
@@ -23,14 +23,14 @@ const Blog = ({
           onClick={() => setShowMoreInfo(!showMoreInfo)}
           className="toggle-view-more-button"
         >
-          {showMoreInfo ? "Hide" : "View"}
+          {showMoreInfo ? 'Hide' : 'View'}
         </button>
       </div>
       {displayMoreInfo && (
         <div className="more-info">
           <a href={blog.url}>{blog.url}</a>
           <span>
-            Likes: <span className="likes-count">{blog.likes}</span>{" "}
+            Likes: <span className="likes-count">{blog.likes}</span>{' '}
             <button
               className="button-inline increment-likes-button"
               title="Increment Likes"
