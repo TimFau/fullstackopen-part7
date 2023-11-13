@@ -1,0 +1,16 @@
+.users-list {
+  padding: 0;
+
+  li {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    background: #eee;
+    border: 1px solid black;
+    padding: 5px;
+    &.head {
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+  }
+}

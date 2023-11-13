@@ -1,6 +1,8 @@
 import { useEffect, useContext } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Login from './components/Login'
 import Blogs from './components/Blogs'
+import Users from './components/Users'
 import Notification from './components/Notification'
 import NotificationContext from './context/NotificationContext'
 import UserContext from './context/UserContext'
@@ -29,7 +31,7 @@ const App = () => {
   }
 
   return (
-    <div>
+    <Router>
       <Notification />
       <div className="container user-info">
         <p>{userState.user.name} logged in</p>{' '}
@@ -37,8 +39,11 @@ const App = () => {
           Logout
         </button>
       </div>
-      <Blogs />
-    </div>
+      <Routes>
+        <Route path="/" element={<Blogs />} />
+        <Route path="/users" element={<Users />} />
+      </Routes>
+    </Router>
   )
 }
 
