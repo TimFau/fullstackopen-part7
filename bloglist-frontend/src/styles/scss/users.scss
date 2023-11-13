@@ -3,14 +3,23 @@
 
   li {
     list-style: none;
-    display: flex;
-    justify-content: space-between;
-    background: #eee;
-    border: 1px solid black;
-    padding: 5px;
+    a {
+      display: flex;
+      justify-content: space-between;
+      background: #eee;
+      border: 1px solid black;
+      padding: 7px;
+      text-decoration: none;
+      color: #000;
+      &:hover {
+        background-color: darken(#eee, 10%);
+      }
+    }
     &.head {
       font-weight: bold;
       font-size: 1.2em;
+      padding: 7px;
+      border: 1px solid black;
     }
   }
 }
