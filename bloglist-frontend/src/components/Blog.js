@@ -1,22 +1,67 @@
-import { useState } from 'react'
-import PropTypes from 'prop-types'
+import { useState, useContext } from 'react'
+import UserContext from '../context/UserContext'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import blogService from '../services/blogs'
+import NotificationContext from '../context/NotificationContext'
+import { Link } from 'react-router-dom'
 
-const Blog = ({
-  blog,
-  usersUsername,
-  handleDeleteBlog,
-  handleIncrementLikes,
-}) => {
+const Blog = ({ blog }) => {
   const [showMoreInfo, setShowMoreInfo] = useState(false)
+  const [userState] = useContext(UserContext)
+  const [, notificationDispatch] = useContext(NotificationContext)
+
+  const queryClient = useQueryClient()
 
   const displayMoreInfo = showMoreInfo ? true : false
-  const isUsersBlog = blog.user.username === usersUsername
+  const isUsersBlog = blog.user.username === userState.user.username
+
+  const handleIncrementLikes = (blog) => {
+    incrementLikesMutation.mutate({ blog })
+  }
+
+  const incrementLikesMutation = useMutation({
+    mutationFn: blogService.incrementLikes,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(['blogs'])
+      console.log('onSuccess', data)
+    },
+    onError: (data) => {
+      console.log('onError', data)
+    },
+  })
+
+  const handleDeleteBlog = async (params) => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete ${params.name} by ${params.author}?`,
+    )
+    const blogId = params.id
+    const token = userState.user.token
+    if (confirmDelete) {
+      deleteBlogMutation.mutate({
+        blogId,
+        token,
+      })
+    }
+  }
+
+  const deleteBlogMutation = useMutation({
+    mutationFn: blogService.deleteBlog,
+    onSuccess: () => {
+      queryClient.invalidateQueries('blogs')
+      notificationDispatch({ type: 'success', content: 'Blog Deleted.' })
+    },
+    onError: (data) => {
+      console.error('onError', data)
+      const error = data.response.data.error
+      notificationDispatch({ type: 'error', content: error })
+    },
+  })
 
   return (
     <div className={`blog-item container ${isUsersBlog ? 'users-blog' : ''}`}>
       <div className="top-wrapper">
         <div className="blog-info">
-          <span className="bold">{blog.title}</span>
+          <span className="bold"><Link to={`/blogs/${blog.id}`}  >{blog.title}</Link></span>
           <span>{blog.author}</span>
         </div>
         <button
@@ -52,13 +97,6 @@ const Blog = ({
       )}
     </div>
   )
-}
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  usersUsername: PropTypes.string.isRequired,
-  handleDeleteBlog: PropTypes.func.isRequired,
-  handleIncrementLikes: PropTypes.func.isRequired,
 }
 
 export default Blog

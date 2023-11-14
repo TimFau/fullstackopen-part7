@@ -1,6 +1,7 @@
 import { useEffect, useContext } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Login from './components/Login'
+import Blog from './components/Blog'
 import Blogs from './components/Blogs'
 import Users from './components/Users'
 import User from './components/User'
@@ -44,6 +45,7 @@ const App = () => {
         <Route path="/" element={<Blogs />} />
         <Route path="/users" element={<Users />} />
         <Route path="/user/:id" element={<User />} />
+        <Route path="/blogs/:id" element={<Blog />} />
       </Routes>
     </Router>
   )
