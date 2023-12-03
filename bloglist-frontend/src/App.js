@@ -1,7 +1,7 @@
 import { useEffect, useContext } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Login from './components/Login'
-import Blog from './components/Blog'
+import Blog from './pages/Blog'
 import Blogs from './components/Blogs'
 import Users from './components/Users'
 import User from './components/User'

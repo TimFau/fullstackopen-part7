@@ -1,18 +1,22 @@
-import { useState, useContext } from 'react'
+import { useContext } from 'react'
 import UserContext from '../context/UserContext'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import blogService from '../services/blogs'
 import NotificationContext from '../context/NotificationContext'
-import { Link } from 'react-router-dom'
 
 const Blog = ({ blog }) => {
-  const [showMoreInfo, setShowMoreInfo] = useState(false)
+  const queryClient = useQueryClient()
   const [userState] = useContext(UserContext)
   const [, notificationDispatch] = useContext(NotificationContext)
 
-  const queryClient = useQueryClient()
+  if (!blog) {
+    return 'Missing blog'
+  }
 
-  const displayMoreInfo = showMoreInfo ? true : false
+  if ('user' in blog === false) {
+    return 'User property missing'
+  }
+
   const isUsersBlog = blog.user.username === userState.user.username
 
   const handleIncrementLikes = (blog) => {
@@ -61,40 +65,32 @@ const Blog = ({ blog }) => {
     <div className={`blog-item container ${isUsersBlog ? 'users-blog' : ''}`}>
       <div className="top-wrapper">
         <div className="blog-info">
-          <span className="bold"><Link to={`/blogs/${blog.id}`}  >{blog.title}</Link></span>
+          <span className="bold">{blog.title}</span>
           <span>{blog.author}</span>
         </div>
-        <button
-          onClick={() => setShowMoreInfo(!showMoreInfo)}
-          className="toggle-view-more-button"
-        >
-          {showMoreInfo ? 'Hide' : 'View'}
-        </button>
       </div>
-      {displayMoreInfo && (
-        <div className="more-info">
-          <a href={blog.url}>{blog.url}</a>
-          <span>
-            Likes: <span className="likes-count">{blog.likes}</span>{' '}
-            <button
-              className="button-inline increment-likes-button"
-              title="Increment Likes"
-              onClick={() => handleIncrementLikes(blog)}
-            >
-              like
-            </button>
-          </span>
-          <span>{blog.user.username}</span>
-          {isUsersBlog && (
-            <button
-              onClick={() => handleDeleteBlog(blog)}
-              className="delete-button"
-            >
-              Delete
-            </button>
-          )}
-        </div>
-      )}
+      <div className="more-info">
+        <a href={blog.url}>{blog.url}</a>
+        <span>
+          Likes: <span className="likes-count">{blog.likes}</span>{' '}
+          <button
+            className="button-inline increment-likes-button"
+            title="Increment Likes"
+            onClick={() => handleIncrementLikes(blog)}
+          >
+            like
+          </button>
+        </span>
+        <span>{blog.user.username}</span>
+        {isUsersBlog && (
+          <button
+            onClick={() => handleDeleteBlog(blog)}
+            className="delete-button"
+          >
+            Delete
+          </button>
+        )}
+      </div>
     </div>
   )
 }

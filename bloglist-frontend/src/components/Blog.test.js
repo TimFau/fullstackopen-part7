@@ -38,7 +38,7 @@ test('renders only title and author by default', () => {
   expect(container).not.toHaveTextContent(blog.likes)
 })
 
-test("renders url and likes after clicking 'view more", async () => {
+test('renders url and likes after clicking \'view more', async () => {
   const { container } = render(
     <Blog
       blog={blog}
@@ -60,7 +60,7 @@ test("renders url and likes after clicking 'view more", async () => {
   expect(container).toHaveTextContent(blog.likes)
 })
 
-test("if 'like' button is clicked twice, 'handleIncrementLikes' is run twice", async () => {
+test('if \'like\' button is clicked twice, \'handleIncrementLikes\' is run twice', async () => {
   const mockHandler = jest.fn()
 
   const { container } = render(
