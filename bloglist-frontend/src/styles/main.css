@@ -12,6 +12,12 @@
       display: inline-block;
       padding: 0; }
 
+.add-comment {
+  display: flex;
+  flex-direction: column; }
+  .add-comment textarea {
+    min-height: 100px; }
+
 .users-list {
   padding: 0; }
   .users-list li {

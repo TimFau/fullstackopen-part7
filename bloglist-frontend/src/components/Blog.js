@@ -62,11 +62,11 @@ const Blog = ({ blog }) => {
   })
 
   return (
-    <div className={`blog-item container ${isUsersBlog ? 'users-blog' : ''}`}>
+    <div className={`container blog-item ${isUsersBlog ? 'users-blog' : ''}`}>
       <div className="top-wrapper">
         <div className="blog-info">
-          <span className="bold">{blog.title}</span>
-          <span>{blog.author}</span>
+          <h1 className="bold">{blog.title}</h1>
+          <h2>{blog.author}</h2>
         </div>
       </div>
       <div className="more-info">
@@ -90,6 +90,18 @@ const Blog = ({ blog }) => {
             Delete
           </button>
         )}
+      </div>
+      <div className="blog-item-comments">
+        <h3>Comments</h3>
+        {/* <div className="add-comment">
+          <textarea id="comment" />
+          <button type="submit">Add Comment</button>
+        </div> */}
+        <ul>
+          {blog.comments.map((comment) => (
+            <li key={comment}>{comment}</li>
+          ))}
+        </ul>
       </div>
     </div>
   )

@@ -91,4 +91,27 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) =
     }
 })
 
+// Add a comment to a Blog
+blogsRouter.post('/:id/comments', async (request, response) => {
+    const body = request.body
+    const id = request.params.id
+
+    const blog = {
+        user: body.user,
+        title: body.title,
+        author: body.author,
+        url: body.url,
+        likes: body.likes,
+        comments: body.comments
+    }
+
+    try {
+        const updatedBlog = await Blog.findByIdAndUpdate(id, blog, { new: true })
+        if (!updatedBlog) return response.status(404).send({ error: 'blog with that ID not found'})
+        response.json(updatedBlog)
+    } catch (error) {
+        response.status(400).send(error)
+    }
+})
+
 module.exports = blogsRouter

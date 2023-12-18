@@ -15,3 +15,10 @@
     }
   }
 }
+.add-comment {
+  display: flex;
+  flex-direction: column;
+  textarea {
+    min-height: 100px;
+  }
+}
