@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import UserContext from '../context/UserContext'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import blogService from '../services/blogs'
@@ -8,6 +8,7 @@ const Blog = ({ blog }) => {
   const queryClient = useQueryClient()
   const [userState] = useContext(UserContext)
   const [, notificationDispatch] = useContext(NotificationContext)
+  const [newComment, setNewComment] = useState('')
 
   if (!blog) {
     return 'Missing blog'
@@ -61,6 +62,20 @@ const Blog = ({ blog }) => {
     },
   })
 
+  const addCommentMutation = useMutation({
+    mutationFn: blogService.addComment,
+    onSuccess: () => {
+      queryClient.invalidateQueries('blogs')
+      notificationDispatch({ type: 'success', content: 'Comment Added.' })
+    }
+  })
+
+  const handleAddComment = async (event) => {
+    event.preventDefault()
+
+    addCommentMutation.mutate({ blog, newComment: newComment.toString() })
+  }
+
   return (
     <div className={`container blog-item ${isUsersBlog ? 'users-blog' : ''}`}>
       <div className="top-wrapper">
@@ -93,10 +108,10 @@ const Blog = ({ blog }) => {
       </div>
       <div className="blog-item-comments">
         <h3>Comments</h3>
-        {/* <div className="add-comment">
-          <textarea id="comment" />
+        <form className="add-comment" onSubmit={handleAddComment}>
+          <textarea id="comment" value={newComment} onChange={({ target }) => setNewComment(target.value)} />
           <button type="submit">Add Comment</button>
-        </div> */}
+        </form>
         <ul>
           {blog.comments.map((comment) => (
             <li key={comment}>{comment}</li>

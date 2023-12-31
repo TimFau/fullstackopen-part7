@@ -48,18 +48,18 @@ const incrementLikes = async (params) => {
   return response.data
 }
 
-// const addComment = async (params) => {
-//   const body = {
-//     user: params.blog.user.id,
-//     likes: params.blog.likes,
-//     author: params.blog.author,
-//     title: params.blog.title,
-//     url: params.blog.url,
-//     comments: params.blog.comments, ...params.newComment
-//   }
+const addComment = async (params) => {
+  const body = {
+    title: params.blog.title,
+    author: params.blog.author,
+    url: params.blog.url,
+    likes: params.blog.likes,
+    comments: [...params.blog.comments, params.newComment]
+  }
 
-//   const response = await axios.post(`${baseUrl}/${params.blog.id}`, body)
-//   return response.data
-// }
+  const response = await axios.post(`${baseUrl}/${params.blog.id}/comments`, body)
 
-export default { getAll, create, deleteBlog, incrementLikes }
+  return response.data
+}
+
+export default { getAll, create, deleteBlog, incrementLikes, addComment }
