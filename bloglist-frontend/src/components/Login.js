@@ -3,6 +3,7 @@ import loginService from '../services/login'
 import { useState, useContext } from 'react'
 import UserContext from '../context/UserContext'
 import NotificationContext from '../context/NotificationContext'
+import { Button } from 'react-bootstrap'
 
 const Login = () => {
   const [username, setUsername] = useState('')
@@ -53,9 +54,9 @@ const Login = () => {
             onChange={({ target }) => setPassword(target.value)}
           ></input>
         </div>
-        <button type="submit" id="loginButton">
+        <Button type="submit" id="loginButton">
           Login
-        </button>
+        </Button>
       </form>
     </div>
   )

@@ -3,6 +3,7 @@ import blogService from '../services/blogs'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import NotificationContext from '../context/NotificationContext'
 import UserContext from '../context/UserContext'
+import { Button } from 'react-bootstrap'
 
 const CreateBlog = () => {
   const [title, setTitle] = useState('')
@@ -110,9 +111,9 @@ const CreateBlog = () => {
             onChange={({ target }) => setUrl(target.value)}
           ></input>
         </div>
-        <button type="submit" id="submitCreateBlogButton">
+        <Button type="submit" id="submitCreateBlogButton">
           Create
-        </button>
+        </Button>
       </form>
     </div>
   )

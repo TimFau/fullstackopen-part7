@@ -3,6 +3,7 @@ import UserContext from '../context/UserContext'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import blogService from '../services/blogs'
 import NotificationContext from '../context/NotificationContext'
+import { Container, Button } from 'react-bootstrap'
 
 const Blog = ({ blog }) => {
   const queryClient = useQueryClient()
@@ -77,7 +78,7 @@ const Blog = ({ blog }) => {
   }
 
   return (
-    <div className={`container blog-item ${isUsersBlog ? 'users-blog' : ''}`}>
+    <Container className={`blog-item ${isUsersBlog ? 'users-blog' : ''}`}>
       <div className="top-wrapper">
         <div className="blog-info">
           <h1 className="bold">{blog.title}</h1>
@@ -88,22 +89,22 @@ const Blog = ({ blog }) => {
         <a href={blog.url}>{blog.url}</a>
         <span>
           Likes: <span className="likes-count">{blog.likes}</span>{' '}
-          <button
+          <Button
             className="button-inline increment-likes-button"
             title="Increment Likes"
             onClick={() => handleIncrementLikes(blog)}
           >
             like
-          </button>
+          </Button>
         </span>
         <span>{blog.user.username}</span>
         {isUsersBlog && (
-          <button
+          <Button
             onClick={() => handleDeleteBlog(blog)}
             className="delete-button"
           >
             Delete
-          </button>
+          </Button>
         )}
       </div>
       <div className="blog-item-comments">
@@ -118,7 +119,7 @@ const Blog = ({ blog }) => {
           ))}
         </ul>
       </div>
-    </div>
+    </Container>
   )
 }
 
