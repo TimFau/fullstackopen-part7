@@ -3,7 +3,7 @@ import blogService from '../services/blogs'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import NotificationContext from '../context/NotificationContext'
 import UserContext from '../context/UserContext'
-import { Button } from 'react-bootstrap'
+import { Form, Button, Card } from 'react-bootstrap'
 
 const CreateBlog = () => {
   const [title, setTitle] = useState('')
@@ -79,42 +79,42 @@ const CreateBlog = () => {
 
   return (
     <div>
-      <h3>Create New blog</h3>
-      <form onSubmit={addBlog}>
-        <div className="input-wrap">
-          <label htmlFor="title">Title</label>
-          <input
+      <Card.Title>Create New blog</Card.Title>
+      <Form onSubmit={addBlog}>
+        <Form.Group>
+          <Form.Label htmlFor="title">Title</Form.Label>
+          <Form.Control
             id="createBlogTitle"
             type="text"
             value={title}
             name="Title"
             onChange={({ target }) => setTitle(target.value)}
-          ></input>
-        </div>
-        <div className="input-wrap">
-          <label htmlFor="author">Author</label>
-          <input
+          ></Form.Control>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label htmlFor="author">Author</Form.Label>
+          <Form.Control
             id="createBlogAuthor"
             type="text"
             value={author}
             name="Author"
             onChange={({ target }) => setAuthor(target.value)}
-          ></input>
-        </div>
-        <div className="input-wrap">
-          <label htmlFor="url">URL</label>
-          <input
+          ></Form.Control>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label htmlFor="url">URL</Form.Label>
+          <Form.Control
             id="createBlogUrl"
             type="text"
             value={url}
             name="URL"
             onChange={({ target }) => setUrl(target.value)}
-          ></input>
-        </div>
+          ></Form.Control>
+        </Form.Group>
         <Button type="submit" id="submitCreateBlogButton">
           Create
         </Button>
-      </form>
+      </Form>
     </div>
   )
 }

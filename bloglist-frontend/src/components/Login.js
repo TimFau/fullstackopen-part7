@@ -3,7 +3,7 @@ import loginService from '../services/login'
 import { useState, useContext } from 'react'
 import UserContext from '../context/UserContext'
 import NotificationContext from '../context/NotificationContext'
-import { Button } from 'react-bootstrap'
+import { Button, Container, Form } from 'react-bootstrap'
 
 const Login = () => {
   const [username, setUsername] = useState('')
@@ -30,35 +30,35 @@ const Login = () => {
   }
 
   return (
-    <div>
+    <Container>
       <h2>Log in</h2>
       <Notification />
-      <form onSubmit={handleLogin} className="container">
-        <div className="input-wrap">
-          <label htmlFor="username">Username</label>
-          <input
+      <Form onSubmit={handleLogin} className="container">
+        <Form.Group>
+          <Form.Label htmlFor="username">Username</Form.Label>
+          <Form.Control
             id="username"
             type="text"
             value={username}
             name="Username"
             onChange={({ target }) => setUsername(target.value)}
-          ></input>
-        </div>
-        <div className="input-wrap">
-          <label htmlFor="password">Password</label>
-          <input
+          ></Form.Control>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label htmlFor="password">Password</Form.Label>
+          <Form.Control
             id="password"
             type="text"
             value={password}
             name="Password"
             onChange={({ target }) => setPassword(target.value)}
-          ></input>
-        </div>
+          ></Form.Control>
+        </Form.Group>
         <Button type="submit" id="loginButton">
           Login
         </Button>
-      </form>
-    </div>
+      </Form>
+    </Container>
   )
 }
 

@@ -34,6 +34,7 @@ const Blogs = () => {
                 <Card.Body>
                  <Card.Title>{blog.title}</Card.Title>
                  <Card.Text>by {blog.author}</Card.Text>
+                 <Button>View More</Button>
                 </Card.Body>
               </Card>
             )

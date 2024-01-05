@@ -1,4 +1,3 @@
-@import './blogs.scss';
 @import './users.scss';
 
 .bold {
@@ -28,9 +27,4 @@
 
 .input-wrap input {
   height: 25px;
-}
-
-.toggle-wrapper div + div {
-  display: flex;
-  justify-content: space-between;
 }
